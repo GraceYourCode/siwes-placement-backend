@@ -1,0 +1,132 @@
+# Why this structure works
+
+Domain-driven modules:
+
+* `services.py` = business logic (write operations)
+* `selectors.py` = read/query logic
+* `models.py` = persistence only
+* `views.py` = thin controllers
+* `tasks.py` = async jobs
+* `events.py` = workflow hooks
+
+This keeps logic modular, testable, and future-ready for microservices.
+
+---
+
+# Suggested DRF app decomposition
+
+### 1) Accounts (users + roles)
+
+Roles to support:
+
+* STUDENT
+* SUPERVISOR
+* COMPANY_ADMIN
+* INSTITUTION_ADMIN
+* PLATFORM_ADMIN
+
+Includes:
+
+* authentication
+* onboarding state
+* permissions
+* role switching
+
+---
+
+### 2) Institutions
+
+Handles:
+
+* university registration
+* configurable SIWES duration
+* grading policies
+* logbook formats
+* approval flows
+* term/session calendars
+
+---
+
+### 3) Students
+
+Handles:
+
+* profile
+* programme details
+* placement applications
+* placement status lifecycle
+
+---
+
+### 4) Companies
+
+Handles:
+
+* onboarding
+* CAC verification pipeline (placeholder initially)
+* supervisor assignment
+* available placement slots
+
+---
+
+### 5) Marketplace
+
+Handles:
+
+* placement listings
+* eligibility rules
+* matching logic
+* application routing
+
+---
+
+### 6) Logbooks
+
+Handles:
+
+* weekly entries
+* attachments
+* supervisor feedback
+* scoring
+
+---
+
+### 7) Workflows
+
+Centralized approval engine for:
+
+* institution approval
+* supervisor approval
+* placement confirmation
+* completion certification
+
+---
+
+### 8) Notifications
+
+Supports:
+
+* email
+* in-app notifications
+* periodic reminders
+* escalations
+
+---
+
+### 9) Audits
+
+Tracks:
+
+* user actions
+* compliance logs
+* institutional reports
+
+# Next recommended step
+
+I can generate:
+
+1. PostgreSQL-ready **initial models for all core apps**, or
+2. A **settings/base.py** template with DRF, PostgreSQL, Celery, and JWT wired, or
+3. A **migration-safe database schema map** (tables + relationships).
+
+Tell me which one you want first.
