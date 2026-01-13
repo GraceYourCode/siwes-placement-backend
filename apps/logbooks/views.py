@@ -6,7 +6,6 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from apps.logbooks.permissions import IsStudentOrSuervisor
 from apps.logbooks.utils import if_not_student_restrict_other_users
-from rest_framework.response import Response
 
 
 class LogbookEntryViewset(ModelViewSet):
@@ -73,15 +72,15 @@ class ReviewViewset(ModelViewSet):
 
 
 class LogbookViewset(ModelViewSet):
-    queryset = Logbook.objects.select_related("student", "student_user").all()
+    queryset = Logbook.objects.all()
     serializer_class = LogbookSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
 
-        # if user.role == "institution":
-        #     return Logbook.objects.filter(student_institution_user=user)
+        if user.role == "institution":
+            return Logbook.objects.filter(student__institution__user=user)
 
         if user.role == "student":
-            return Logbook.objects.filter(student=user.studentinstitutionprofile)
+            return Logbook.objects.filter(student__user=user)

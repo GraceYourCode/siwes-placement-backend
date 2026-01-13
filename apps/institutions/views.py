@@ -6,7 +6,6 @@ from apps.institutions.permissions import IsInstitution
 
 
 class InstitutionViewSet(ModelViewSet):
-    queryset = InstitutionProfile.objects.all()
     serializer_class = InstitutionSerializer
     permission_classes = [IsAuthenticated, IsInstitution]
 
@@ -14,3 +13,7 @@ class InstitutionViewSet(ModelViewSet):
         user = self.request.user
 
         serializer.save(user=user)
+
+    def get_queryset(self):
+        user = self.request.user
+        return InstitutionProfile.objects.filter(user=user)
