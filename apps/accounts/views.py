@@ -5,6 +5,7 @@ from .serializers import RegisterSerializer, UserSerializer, LoginSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
+from rest_framework.exceptions import PermissionDenied
 
 
 class UserViewSet(ModelViewSet):
@@ -18,6 +19,14 @@ class UserViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return User.objects.filter(id=user.id)
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+
+        if user.id != instance.id:
+            raise PermissionDenied("You cannot delete another user profile")
+
+        instance.delete()
 
     @action(detail=False, methods=["post"])
     def register(self, request):
