@@ -9,12 +9,15 @@ from .models import User
 
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
 
     def get_permissions(self):
         if self.action in ["login", "register"]:
             return [AllowAny()]
         return [IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        return User.objects.filter(id=user.id)
 
     @action(detail=False, methods=["post"])
     def register(self, request):
