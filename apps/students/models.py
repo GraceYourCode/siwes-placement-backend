@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from apps.students.utils import placement_letter_upload_path
 
 
 class StudentInstitutionProfile(models.Model):
@@ -37,7 +38,7 @@ class StudentPlacement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     student = models.ForeignKey(StudentInstitutionProfile, on_delete=models.CASCADE)
 
-    company = models.ForeignKey("apps.CompanyProfile", on_delete=models.CASCADE)
+    company = models.ForeignKey("apps.Company", on_delete=models.CASCADE)
     placement_status = models.CharField(
         max_length=20,
         choices=[
@@ -45,8 +46,12 @@ class StudentPlacement(models.Model):
             ("verified", "Verified"),
             ("rejected", "Rejected"),
         ],
+        default="pending",
     )
-    is_active = models.BooleanField(default=True)
+    placement_letter = models.FileField(
+        upload_to=placement_letter_upload_path, null=True, blank=True
+    )
+    is_active = models.BooleanField(default=False)
 
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
