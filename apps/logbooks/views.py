@@ -4,25 +4,33 @@ from .serializers import LogbookEntrySerializer, ReviewSerializer, LogbookSerial
 from apps.students.models import StudentInstitutionProfile, StudentPlacement
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-from apps.logbooks.permissions import IsStudentOrSuervisor
 from apps.logbooks.utils import if_not_student_restrict_other_users
+from apps.supervisors.permissions import IsSupervisor
+from apps.students.permissions import IsStudent, IsPlacementValid
 
 
 class LogbookEntryViewset(ModelViewSet):
     queryset = LogbookEntry.objects.all()
     serializer_class = LogbookEntrySerializer
-    permission_classes = [IsAuthenticated, IsStudentOrSuervisor]
+
+    def get_permissions(self):
+        user = self.request.user
+
+        if user.role == "supervisor":
+            return [IsAuthenticated(), IsSupervisor()]
+        elif user.role == "student":
+            return [IsAuthenticated(), IsStudent(), IsPlacementValid()]
+        return False
 
     def get_queryset(self):
         user = self.request.user
 
-        print(user, "na me be dis")
-
         if user.role == "student":
-            return LogbookEntry.objects.filter(logbook_student_user=user)
+            return LogbookEntry.objects.filter(logbook__student__user=user)
 
         if user.role == "supervisor":
-            return LogbookEntry.objects.filter(placement_supervisor_user=user)
+            print("Na supervisor Ibe")
+            return LogbookEntry.objects.filter(placement__supervisor__user=user)
 
         return LogbookEntry.objects.none()
 
