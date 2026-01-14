@@ -14,4 +14,4 @@ class StudentPlacementSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentPlacement
         fields = "__all__"
-        read_only_fields = ["supervisor"]
+        read_only_fields = ["supervisor", "student", "company"]
