@@ -24,6 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "role",
             "password",
         ]
+        read_only_fields = ["password"]
 
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data["password"])

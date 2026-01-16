@@ -9,9 +9,9 @@ router.register(r"users", UserViewSet, basename="user")
 
 urlpatterns = [
     path(
-        "users/auth/token_refresh/",
+        "users/auth/refresh_token/",
         TokenRefreshView.as_view(permission_classes=[]),
-        name="token_refresh",
+        name="refresh_token",
     ),
 ]
 
