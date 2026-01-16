@@ -29,7 +29,6 @@ class LogbookEntryViewset(ModelViewSet):
             return LogbookEntry.objects.filter(logbook__student__user=user)
 
         if user.role == "supervisor":
-            print("Na supervisor Ibe")
             return LogbookEntry.objects.filter(placement__supervisor__user=user)
 
         return LogbookEntry.objects.none()
