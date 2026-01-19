@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             ("student", "Student"),
             ("institution", "Institution Admin"),
             ("supervisor", "Supervisor"),
-            ("company", "Company Rep"),
+            ("mentor", "Company Mentor"),
         ],
     )
     created_at = models.DateField(auto_now=True)
