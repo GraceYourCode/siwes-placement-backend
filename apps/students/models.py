@@ -59,3 +59,7 @@ class StudentPlacement(models.Model):
     supervisor = models.ForeignKey(
         "apps.SupervisorProfile", null=True, blank=True, on_delete=models.SET_NULL
     )
+
+    mentor = models.ForeignKey(
+        "apps.CompanyMentor", null=True, blank=True, on_delete=models.SET_NULL
+    )

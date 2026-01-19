@@ -10,6 +10,10 @@ from apps.students.models import StudentPlacement
 from apps.students.serializers import StudentPlacementSerializer
 from apps.students.services import assign_supervisor
 from apps.students.utils import get_company
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+from apps.mentors.models import MentorInvitation
 
 
 class StudentInstitutionProfileViewSet(ModelViewSet):
@@ -48,3 +52,14 @@ class StudentPlacementViewSet(ModelViewSet):
         user = self.request.user
 
         return StudentPlacement.objects.filter(student=user.studentinstitutionprofile)
+
+    @action(detail=False, methods=["post"])
+    def invite_mentor(self, request):
+        email = request.data.get("mentor_email")
+        company = request.user.studentplacement.company
+        invitation = MentorInvitation.objects.create(email=email, company=company)
+
+        return Response(
+            {"message": f"Invitation email sent to {email}", invitation: invitation},
+            status=status.HTTP_200_OK,
+        )
