@@ -31,7 +31,11 @@ class LogbookEntry(models.Model):
     hours_worked = models.IntegerField()
     status = models.CharField(
         max_length=20,
-        choices=[("pending", "Pending"), ("approved", "Approved")],
+        choices=[
+            ("pending", "Pending"),
+            ("approved", "Approved"),
+            ("rejected", "Rejected"),
+        ],
         default="pending",
     )
     timestamp = models.DateTimeField(auto_now=True)
