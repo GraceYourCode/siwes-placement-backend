@@ -9,6 +9,8 @@ from apps.supervisors.models import SupervisorProfile
 from rest_framework.response import Response
 from rest_framework import status
 from apps.supervisors.serializers import SupervisorSerializer
+from apps.students.serializers import StudentPlacementSerializer
+from apps.students.models import StudentPlacement
 
 
 class InstitutionViewSet(ModelViewSet):
@@ -43,3 +45,25 @@ class InstitutionViewSet(ModelViewSet):
         serializer = SupervisorSerializer(supervisors, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class InstitutionStudentsViewSet(ModelViewSet):
+    serializer_class = StudentPlacementSerializer
+    permission_classes = [IsInstitution, IsAuthenticated]
+
+    def get_queryset(self):
+        institution = self.request.user.institutionprofile
+
+        return StudentPlacement.objects.filter(institution=institution)
+
+
+class InstitutionSupervisorsViewSet(ModelViewSet):
+    serializer_class = SupervisorSerializer
+    permission_classes = [IsInstitution, IsAuthenticated]
+
+    def get_queryset(self):
+        institution = self.request.user.institutionprofile
+
+        return SupervisorProfile.objects.filter(
+            institution=institution, is_verified=True
+        )
