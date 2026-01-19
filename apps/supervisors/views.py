@@ -21,6 +21,10 @@ class SupervisorViewSet(ModelViewSet):
         institution_id = self.request.data.get("institution_id")
 
         institution = InstitutionProfile.objects.get(pk=institution_id)
+        if institution.DoesNotExist:
+            return Response(
+                {"error": "Institution Not Found!!"}, status=status.HTTP_404_NOT_FOUND
+            )
         serializer.save(user=user, institution=institution)
 
     def get_queryset(self):
@@ -41,11 +45,12 @@ class SupervisorViewSet(ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=["get"])
-    def students(self, request):
-        supervisor = request.user.supervisorprofile
 
-        placements = StudentPlacement.objects.filter(supervisor=supervisor)
-        serializer = StudentPlacementSerializer(placements, many=True)
+class SupervisorStudentsViewSet(ModelViewSet):
+    serializer_class = StudentPlacementSerializer
+    permission_classes = [IsSupervisor, IsAuthenticated]
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        supervisor = self.request.user.supervisorprofile
+
+        return StudentPlacement.objects.filter(supervisor=supervisor)
